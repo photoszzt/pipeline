@@ -6,6 +6,7 @@ from sprocket.config import settings
 from sprocket.stages import InitStateTemplate, ExtractTarStateTemplate, CreateTarStateTemplate, FinalStateTemplate
 from sprocket.stages.util import default_trace_func
 from sprocket.util.misc import rand_str
+import boto3
 
 
 class FinalState(FinalStateTemplate):
@@ -34,10 +35,15 @@ class TryEmitState(CommandListState):
 
     def __init__(self, prevState):
         super(TryEmitState, self).__init__(prevState)
+        s3_client = boto3.client('s3')
+        bucket_name = ''
         if settings.get('hash_bucket'):
-            self.local['out_key'] = settings['temp_storage_base'] + rand_str(1) + '/' + rand_str(16) + '/'
+            bucket_name = settings['temp_storage_base'] + rand_str(1)
+            self.local['out_key'] = 's3://' + bucket_name + '/' + rand_str(16) + '/'
         else:
-            self.local['out_key'] = settings['storage_base'] + rand_str(16) + '/'
+            bucket_name = settings['storage_base'] + rand_str(16)
+            self.local['out_key'] = 's3://' + bucket_name + '/'
+        s3_client.create_bucket(Bucket=bucket_name)
         params = {'out_key': self.local['out_key']}
         self.commands = [ s.format(**params) if s is not None else None for s in self.commands ]
 

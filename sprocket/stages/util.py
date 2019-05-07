@@ -4,6 +4,7 @@ import time
 from sprocket.config import settings
 from sprocket.util import lightlog
 from sprocket.util.misc import rand_str
+import boto3
 
 
 def default_trace_func(in_events, msg, op, **kwargs):
@@ -44,7 +45,12 @@ def preprocess_config(config, existing):
     return new_config
 
 def get_output_key():
+    s3_client = boto3.client('s3')
     if settings.get('hash_bucket'):
-        return settings['temp_storage_base'] + rand_str(1) + '/' + rand_str(16) + '/'
+        bucket_name = settings['temp_storage_base'] + rand_str(1)
+        s3_client.create_client(Bucket=bucket_name)
+        return 's3://' + bucket_name + '/' + rand_str(16) + '/'
     else:
-        return settings['storage_base'] + rand_str(16) + '/'
+        bucket_name = settings['storage_base'] + rand_str(16)
+        s3_client.create_client(Bucket=bucket_name)
+        return 's3://' + bucket_name + '/'

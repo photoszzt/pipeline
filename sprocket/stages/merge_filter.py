@@ -6,6 +6,7 @@ from sprocket.config import settings
 from sprocket.stages import InitStateTemplate
 from sprocket.stages.util import default_trace_func
 from sprocket.util.misc import rand_str
+import boto3
 
 
 class FinalState(TerminalState):
@@ -37,10 +38,15 @@ class RunState(CommandListState):
 
     def __init__(self, prevState):
         super(RunState, self).__init__(prevState)
+        s3_client = boto3.client('s3')
+        bucket_name = ''
         if settings.get('hash_bucket'):
-            self.local['out_key'] = settings['temp_storage_base'] + rand_str(1) + '/' + rand_str(16) + '/'
+            bucket_name = settings['temp_storage_base'] + rand_str(1)
+            self.local['out_key'] = 's3://' + bucket_name + '/' + rand_str(16) + '/'
         else:
-            self.local['out_key'] = settings['storage_base'] + rand_str(16) + '/'
+            bucket_name = settings['storage_base'] + rand_str(16)
+            self.local['out_key'] = 's3://' + bucket_name + '/'
+        s3_client.create_bucket(Bucket=bucket_name)
 
         params = {'in_key_0': self.in_events['frames_0']['key'], 'in_key_1': self.in_events['frames_1']['key'],
                   'out_key': self.local['out_key'], 'filter_complex': self.config['filter_complex']}

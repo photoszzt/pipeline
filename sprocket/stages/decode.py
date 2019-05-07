@@ -7,6 +7,7 @@ from sprocket.controlling.tracker.machine_state import TerminalState, CommandLis
 from sprocket.config import settings
 from sprocket.stages import InitStateTemplate, CreateTarStateTemplate
 from sprocket.stages.util import default_trace_func, get_output_from_message
+import boto3
 
 
 class FinalState(OnePassState):
@@ -102,10 +103,15 @@ class RunState(CommandListState):
 
     def __init__(self, prevState):
         super(RunState, self).__init__(prevState, trace_func=default_trace_func)
+        s3_client = boto3.client('s3')
         if settings.get('hash_bucket'):
-            self.local['out_key'] = settings['temp_storage_base'] + rand_str(1) + '/' + rand_str(16) + '/'
+            bucket_name = settings['temp_storage_base'] + rand_str(1)
+            self.local['out_key'] = 's3://' + bucket_name + '/' + rand_str(16) + '/'
+            s3_client.create_bucket(Bucket=bucket_name)
         else:
-            self.local['out_key'] = settings['storage_base'] + rand_str(16) + '/'
+            bucket_name = settings['storage_base'] + rand_str(16)
+            self.local['out_key'] = 's3://' + bucket_name + '/'
+            s3_client.create_bucket(Bucket=bucket_name)
         params = {'key': self.in_events['chunks']['key'], 'out_key': self.local['out_key']}
         logging.debug('params: '+str(params))
         self.commands = [ s.format(**params) if s is not None else None for s in self.commands ]
