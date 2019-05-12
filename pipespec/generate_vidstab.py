@@ -1,15 +1,15 @@
 import json
 from collections import OrderedDict
-from spec import Encoder,Node,Stream
+from spec import Encoder,Node,Stream,Config
 
 vidstab=OrderedDict()
 nodes=[]
-nodes.append(Node(name="parlink", stage="parallelize_link", delivery_function=None, config=Config(framesperchunk="{fps}", chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None), lambda_function=None))
-nodes.append(Node(name="decode", stage="decode_from_chunked_link", delivery_function=None, config=Config(framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None), lambda_function=None))
-nodes.append(Node(name="vidstabdetect", stage="vidstabdetect", delivery_function=None, config=Config(framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None), lambda_function=None))
-nodes.append(Node(name="vidstabaggregate", stage="vidstabaggregate", delivery_function=None, config=Config(framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None), lambda_function=None))
-nodes.append(Node(name="vidstabtransform", stage="vidstabtransform", delivery_function=None, config=Config(framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None), lambda_function=None))
-nodes.append(Node(name="encode", stage="encode_to_dash", delivery_function=None, config=Config(framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None), lambda_function=None))
+nodes.append(Node(name="parlink", stage="parallelize_link", delivery_function=None, config=Config(framesperchunk="{fps}", chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None, cmd=None), lambda_function=None))
+nodes.append(Node(name="decode", stage="decode_from_chunked_link", delivery_function=None, config=Config(framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None, cmd=None), lambda_function=None))
+nodes.append(Node(name="vidstabdetect", stage="vidstabdetect", delivery_function=None, config=Config(framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None, cmd=None), lambda_function=None))
+nodes.append(Node(name="vidstabaggregate", stage="vidstabaggregate", delivery_function=None, config=Config(framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None, cmd=None), lambda_function=None))
+nodes.append(Node(name="vidstabtransform", stage="vidstabtransform", delivery_function=None, config=Config(framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None, cmd=None), lambda_function=None))
+nodes.append(Node(name="encode", stage="encode_to_dash", delivery_function=None, config=Config(framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None, cmd=None), lambda_function=None))
 vidstab["nodes"]=nodes
 streams=[]
 streams.append(Stream(src="input_0:video_link", dst="parlink:video_link"))

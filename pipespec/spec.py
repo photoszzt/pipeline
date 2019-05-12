@@ -36,13 +36,14 @@ class Stream(object):
 
 @iterable
 class Config(object):
-    def __init__(self, framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None):
+    def __init__(self, framesperchunk=None, chunklimit=None, duration=None, nworkers=None, nsockets=None, outdir=None, cmd=None):
         self.framesperchunk = framesperchunk
         self.chunklimit = chunklimit
         self.duration = duration
         self.nworkers = nworkers
         self.nsockets = nsockets
         self.outdir = outdir
+        self.cmd = cmd
 
 
 class Encoder(json.JSONEncoder):
@@ -61,7 +62,8 @@ def decode_config(dct):
                       duration=dct.get("duration"),
                       nworkers=dct.get("nworkers"),
                       nsockets=dct.get("nsockets"),
-                      outdir=dct.get("outdir")
+                      outdir=dct.get("outdir"),
+                      cmd=dct.get("cmd")
                       )
     return dct
 
@@ -80,7 +82,7 @@ def decode(dct):
 
 def val_str(val):
     if val != None:
-        return "\""+val+"\""
+        return "\""+str(val)+"\""
     else:
         return "None"
 
@@ -89,11 +91,10 @@ def config_str(config):
     if config != None:
         return "Config(framesperchunk=" + val_str(config.framesperchunk) + \
             ", chunklimit=" + val_str(config.chunklimit) + \
-                ", duration=" + val_str(config.duration) + \
-                    ", nworkers=" + val_str(config.nworkers) + \
-                        ", nsockets=" + val_str(config.nsockets) + \
-                            ", outdir=" + val_str(config.outdir) + ")"
+            ", duration=" + val_str(config.duration) + \
+            ", nworkers=" + val_str(config.nworkers) + \
+            ", nsockets=" + val_str(config.nsockets) + \
+            ", outdir=" + val_str(config.outdir) + \
+            ", cmd=" + val_str(config.cmd) + ")"
     else:
         return "None"
-
-

@@ -1,6 +1,6 @@
 import json
 from collections import OrderedDict
-from spec import Encoder,Node,Stream
+from spec import Encoder,Node,Stream,Config
 
 blend=OrderedDict()
 nodes=[]

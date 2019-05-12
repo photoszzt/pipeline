@@ -5,7 +5,6 @@ from spec import decode,val_str,config_str
 for file_name in os.listdir("."):
     if file_name.endswith(".pipe"):
         with open(file_name) as f:
-            print(file_name)
             data = f.read()
             z = json.loads(data, object_hook=decode)
             base = os.path.basename(file_name)
@@ -13,7 +12,7 @@ for file_name in os.listdir("."):
             with open("generate_"+name_arr[0]+".py", 'w') as cg:
                 cg.write("import json\n")
                 cg.write("from collections import OrderedDict\n")
-                cg.write("from spec import Encoder,Node,Stream\n")
+                cg.write("from spec import Encoder,Node,Stream,Config\n")
                 cg.write("\n")
                 cg.write(name_arr[0]+"=OrderedDict()\n")
                 cg.write("nodes=[]\n")
